@@ -18,4 +18,5 @@ package org.jongo.query;
 
 public interface QueryFactory {
     Query createQuery(String query, Object... parameters);
+    Query createDynamicQuery(String query, Object... parameters);
 }

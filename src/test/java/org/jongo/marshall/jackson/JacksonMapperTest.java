@@ -133,6 +133,10 @@ public class JacksonMapperTest {
             public Query createQuery(String query, Object... parameters) {
                 return null;
             }
+            public Query createDynamicQuery(String query, Object... parameters) {
+                return null;
+            }
+
         };
         Mapper mapper = new JacksonMapper.Builder()
                 .withObjectIdUpdater(objectIdUpdater)

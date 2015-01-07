@@ -61,7 +61,15 @@ public class BsonQueryFactory implements QueryFactory {
         this.marshaller = marshaller;
     }
 
-    public Query createQuery(final String query, Object... parameters) {
+    public Query createDynamicQuery(String query, Object... parameters) {
+        return createQuery(true, query, parameters);
+    }
+
+    public Query createQuery(String query, Object... parameters) {
+        return createQuery(false, query, parameters);
+    }
+
+    protected Query createQuery(final boolean dynamic, final String query, Object... parameters) {
 
         if (query == null) {
             return new BsonQuery((DBObject) JSON.parse(query));
@@ -125,6 +133,13 @@ public class BsonQueryFactory implements QueryFactory {
                 int paramPos = 0;
 
                 @Override
+                public void gotNull(String name) {
+                    if (!dynamic) {
+                        super.gotNull(name);
+                    }
+                }
+
+                @Override
                 public Object objectDone() {
                     String name = curName();
                     Object o = super.objectDone();
@@ -141,11 +156,17 @@ public class BsonQueryFactory implements QueryFactory {
                             o = marshallParameter(params[paramPos++]);
 
                             // Replace value set by super.objectDone()
-                            if (!isStackEmpty()) {
-                                _put(name, o);
+                            if (o != null) {
+                                if (!isStackEmpty()) {
+                                    _put(name, o);
+                                } else {
+                                    o = !BSON.hasDecodeHooks() ? o : BSON.applyDecodingHooks(o);
+                                    setRoot(o);
+                                }
                             } else {
-                                o = !BSON.hasDecodeHooks() ? o : BSON.applyDecodingHooks(o);
-                                setRoot(o);
+                                if (dynamic) {
+                                    cur().removeField(name);
+                                }
                             }
                         }
                     }

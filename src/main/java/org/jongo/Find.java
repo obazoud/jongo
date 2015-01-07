@@ -31,13 +31,16 @@ import static org.jongo.ResultHandlerFactory.newResultHandler;
 
 public class Find {
 
-    private final DBCollection collection;
-    private final ReadPreference readPreference;
-    private final Unmarshaller unmarshaller;
-    private final QueryFactory queryFactory;
-    private final Query query;
-    private final List<QueryModifier> modifiers;
-    private Query fields;
+    protected DBCollection collection;
+    protected ReadPreference readPreference;
+    protected Unmarshaller unmarshaller;
+    protected QueryFactory queryFactory;
+    protected Query query;
+    protected List<QueryModifier> modifiers;
+    protected Query fields;
+
+    Find() {
+    }
 
     Find(DBCollection collection, ReadPreference readPreference, Unmarshaller unmarshaller, QueryFactory queryFactory, String query, Object... parameters) {
         this.readPreference = readPreference;

@@ -88,6 +88,18 @@ public class MongoCollection {
         return new Find(collection, readPreference, mapper.getUnmarshaller(), mapper.getQueryFactory(), query, parameters);
     }
 
+    public Find findDynamic() {
+        return findDynamic(ALL);
+    }
+
+    public Find findDynamic(String query) {
+        return findDynamic(query, NO_PARAMETERS);
+    }
+
+    public Find findDynamic(String query, Object... parameters) {
+        return new FindDynamic(collection, readPreference, mapper.getUnmarshaller(), mapper.getQueryFactory(), query, parameters);
+    }
+
     public FindAndModify findAndModify() {
         return findAndModify(ALL);
     }
